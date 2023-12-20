@@ -1,50 +1,71 @@
-/* Estilos CSS para o jogo */
 body {
-    font-family: 'Arial', sans-serif;
     margin: 0;
-    padding: 0;
+    background-color: rgb(200, 212, 247);
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0;
+    justify-content: center;
+    height: 100vh; 
 }
 
-.game-container {
-    display: grid;
-    grid-template-columns: repeat(4, 100px);
-    grid-template-rows: repeat(4, 100px);
-    gap: 10px;
-}
-
-.carta {
-    width: 100px;
-    height: 100px;
-    background-color: #eee;
+section.jogo {
     display: flex;
+    flex-wrap: wrap; 
     justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    font-size: 20px;
-    font-weight: bold;
-    border: 2px solid #fff;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    border: 5px solid #2a2dc5; 
+    border-radius: 20px; 
+    padding: 20px;
 }
 
-.carta.virada {
-    background-color: #fff;
-    border: 2px solid #ccc;
+div.carta {
+    margin: 5px;
+    width: 100px; 
+    height: 100px; 
+    border-radius: 9px;
+    background-image: url("img/reverse_clear.png");
+    background-size: cover;
+    background-color: rgba(255, 255, 255, 0.75); 
+    cursor: pointer; 
 }
 
-.fim-de-jogo {
-    position: fixed;
+div.carta:hover {
+    background-color: rgba(55, 52, 236, 0.75);
+}
+
+.fimDeJogo {
+    display: none;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px;
     text-align: center;
-    border: 2px solid #ccc;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    display: none;
+    border: #D6676E 5px dotted;
+    border-radius: 70px;
+    padding: 15px;
+    background-color: rgba(165, 212, 54, 0.75);
+}
+
+.reiniciar {
+    padding: 10px 20px;
+    margin-top: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.reiniciar:hover {
+    background-color: #45a049;
+}
+
+h1 {
+    margin: 0;
+    color: #D6676E;
+    font-family: 'Courgette', cursive;
+    font-size: 80px;
+}
+
+.aparecer {
+    display: block;
 }

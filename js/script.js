@@ -1,81 +1,119 @@
-document.addEventListener('DOMContentLoaded', startGame);
+const fim = document.querySelector(".fimDeJogo");
+const cartas = document.querySelectorAll(".carta");
+const imagens = ["images/imagem1.png", "images/imagem2.png", "images/imagem3.png", "images/imagem4.png", "images/imagem5.png", "images/imagem6.png", "images/imagem7.png", "images/imagem8.png"];
 
-let flippedCards = [];
-let matchedCards = [];
-let playerName;
+let ordemCartasEmbaralhadas = [];
+let jogadorNome = "";
+let pontuacao = 0;
+let cartasPareadas = 0;
+let acertos = 0;
 
-function startGame() {
-    createCards();
-    playerName = prompt('Digite seu nome:');
-    if (!playerName) {
-        playerName = 'Jogador';
+function sortearNumero(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function obterNomeJogador() {
+    jogadorNome = prompt("Digite seu nome:");
+    if (!jogadorNome) {
+        jogadorNome = "Jogador Anônimo";
     }
 }
 
-function createCards() {
-    const gameContainer = document.querySelector('.game-container');
+function embaralharCartas() {
+    const distribuicaoImagens = Array(imagens.length).fill(0);
 
-    for (let i = 1; i <= 8; i++) {
-        const card = document.createElement('div');
-        card.className = 'carta';
-        card.dataset.cardNumber = i;
-        card.style.backgroundImage = `url(images/imagem${i}.jpg)`;
-        card.addEventListener('click', flipCard);
-        gameContainer.appendChild(card);
-    }
+    cartas.forEach((carta, i) => {
+        while (ordemCartasEmbaralhadas[i] === undefined) {
+            let num = sortearNumero(0, distribuicaoImagens.length - 1);
+
+            if (distribuicaoImagens[num] < 2) {
+                ordemCartasEmbaralhadas[i] = imagens[num];
+                distribuicaoImagens[num]++;
+            }
+        }
+    });
 }
 
-function flipCard() {
-    const clickedCard = this;
+function virarCarta() {
+    if (!this.estaPareada && !this.estaVirada) {
+        this.style.backgroundImage = `url(${ordemCartasEmbaralhadas[this.indice]})`;
+        this.estaVirada = true;
 
-    if (!flippedCards.includes(clickedCard) && flippedCards.length < 2) {
-        flippedCards.push(clickedCard);
-        clickedCard.classList.add('virada');
+        let cartasViradas = Array.from(cartas).filter(carta => carta.estaVirada && !carta.estaPareada);
 
-        if (flippedCards.length === 2) {
-            setTimeout(checkMatch, 500);
+        if (cartasViradas.length === 2) {
+            verificarPar(cartasViradas);
         }
     }
 }
 
-function checkMatch() {
-    const [card1, card2] = flippedCards;
-
-    if (card1.dataset.cardNumber === card2.dataset.cardNumber) {
-        matchedCards.push(card1, card2);
-
-        if (matchedCards.length === 8) {
-            endGame();
+function verificarPar(cartasSelecionadas) {
+    if (cartasSelecionadas[0].style.backgroundImage == cartasSelecionadas[1].style.backgroundImage) {
+        console.log("Cartas iguais!");
+        for (let carta of cartasSelecionadas) {
+            carta.estaPareada = true;
         }
+        pontuacao += 10;
+        cartasPareadas += 2;
+        acertos++;
+
+        if (cartasPareadas === cartas.length) {
+            // Todas as cartas estão pareadas, ajusta a pontuação para 100
+            pontuacao = 100;
+        }
+
+        verificarFimDeJogo();
     } else {
-        card1.classList.remove('virada');
-        card2.classList.remove('virada');
+        console.log("Cartas diferentes!");
+        setTimeout(desvirarCarta, 300, cartasSelecionadas);
     }
-
-    flippedCards = [];
 }
 
-function endGame() {
-    const endScreen = document.createElement('div');
-    endScreen.className = 'fim-de-jogo';
-    endScreen.innerHTML = `
-        <p>Fim do jogo, ${playerName}!</p>
-        <p>Pontuação: ${matchedCards.length / 2}</p>
-        <button onclick="reiniciarJogo()">Jogar Novamente</button>
-    `;
-    
-    document.body.appendChild(endScreen);
+function desvirarCarta(cartasSelecionadas) {
+    for (let carta of cartasSelecionadas) {
+        carta.style.backgroundImage = "url(img/reverse_clear.png)";
+        carta.estaVirada = false;
+    }
+}
+
+function verificarFimDeJogo() {
+    if (cartasPareadas === cartas.length) {
+        mostrarResultado();
+    }
+}
+
+function mostrarResultado() {
+    alert(`Parabéns, ${jogadorNome}! Sua pontuação é ${pontuacao} %. Você acertou ${acertos} vezes.`);
+    const jogarNovamente = confirm("Deseja jogar novamente?");
+    if (jogarNovamente) {
+        reiniciarJogo();
+    } else {
+        fim.classList.add("aparecer");
+    }
 }
 
 function reiniciarJogo() {
-    const endScreen = document.querySelector('.fim-de-jogo');
-    endScreen.style.display = 'none';
-    
-    const gameContainer = document.querySelector('.game-container');
-    gameContainer.innerHTML = '';
+    ordemCartasEmbaralhadas = [];
+    jogadorNome = "";
+    pontuacao = 0;
+    cartasPareadas = 0;
+    acertos = 0;
+    fim.classList.remove("aparecer");
+    obterNomeJogador();
+    embaralharCartas();
+    for (let carta of cartas) {
+        carta.style.backgroundImage = "url(img/reverse_clear.png)";
+        carta.estaVirada = false;
+        carta.estaPareada = false;
+    }
+}
 
-    flippedCards = [];
-    matchedCards = [];
+obterNomeJogador();
+embaralharCartas();
 
-    startGame();
+for (let i = 0; i < cartas.length; i++) {
+    cartas[i].addEventListener("click", virarCarta);
+    cartas[i].estaVirada = false;
+    cartas[i].estaPareada = false;
+    cartas[i].indice = i;
 }
