@@ -9,7 +9,7 @@ O jogador só pode selecionar duas cartas por vez.
 Se as cartas não forem iguais elas se viram automaticamente.
 
 ## Como Executar
-Abra o link do jogo no seu navegador e se divirta [jogo da memória]()
+Abra o link do jogo no seu navegador e se divirta [jogo da memória](https://jogodamemoria-web8.netlify.app/)
 
 ## Como Jogar
 O jogador seleciona uma carta, esta se vira.
